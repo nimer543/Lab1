@@ -1,0 +1,75 @@
+<!-- app/views/templates/trip_list.html -->
+{% extends "base.html" %}
+
+{% block title %}Moje Podróże - TravelPlanner{% endblock %}
+
+{% block content %}
+<div class="page-header">
+    <h1 class="page-title">Moje podróże</h1>
+    <a href="/trips/new" class="btn btn-primary">Dodaj podróż</a>
+</div>
+
+<div class="search-filter-section">
+    <form method="GET" action="/" class="search-filter-form">
+        <div class="form-group">
+            <label for="search">Cel podróży</label>
+            <input type="text" id="search" name="search" class="form-input" 
+                   placeholder="Dokąd jedziemy? (np. Paryż)" value="{{ search }}">
+        </div>
+        
+        <div class="form-group">
+            <label for="min_budget">Budżet od ($)</label>
+            <input type="number" id="min_budget" name="min_budget" class="form-input" 
+                   placeholder="Od" value="{{ min_budget or '' }}">
+        </div>
+
+        <div class="form-group">
+            <label for="max_budget">Budżet do ($)</label>
+            <input type="number" id="max_budget" name="max_budget" class="form-input" 
+                   placeholder="Do" value="{{ max_budget or '' }}">
+        </div>
+
+        <div class="filter-actions">
+            <button type="submit" class="btn btn-primary">Szukaj</button>
+            {% if search or min_budget or max_budget %}
+                <a href="/" class="btn btn-secondary">Resetuj</a>
+            {% endif %}
+        </div>
+    </form>
+</div>
+
+{% if trips %}
+    <div class="trips-grid">
+        {% for trip in trips %}
+            <article class="trip-card">
+                <div class="trip-card-body">
+                    <span class="trip-card-dates">
+                        {{ trip.start_date.strftime('%d.%m.%Y') }} — {{ trip.end_date.strftime('%d.%m.%Y') }}
+                    </span>
+                    <h2 class="trip-card-title">{{ trip.destination }}</h2>
+                    <div class="trip-card-budget-inline">
+                        Budżet: ${{ "%.2f"|format(trip.budget) }}
+                    </div>
+                    <p class="trip-card-desc">
+                        {{ trip.description or "Brak opisu planów na tę niesamowitą podróż." }}
+                    </p>
+                    
+                    <div class="trip-card-footer">
+                        <span class="trip-reservations-count" title="Liczba rezerwacji">
+                            {{ trip.reservations|length }} rezerwacji
+                        </span>
+                        <a href="/trips/{{ trip.id }}" class="btn btn-secondary">Zarządzaj</a>
+                    </div>
+                </div>
+            </article>
+        {% endfor %}
+    </div>
+{% else %}
+    <div class="empty-state">
+        <h2>Nie znaleziono żadnych podróży</h2>
+        <p>Kliknij przycisk „Dodaj podróż” powyżej, aby zacząć planować swoją kolejną przygodę!</p>
+        <a href="/trips/new" class="btn btn-primary" style="margin-top: 1.5rem;">Stwórz pierwszą podróż</a>
+    </div>
+{% endif %}
+{% endblock %}
+
