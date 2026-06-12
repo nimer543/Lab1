@@ -3,11 +3,11 @@ from datetime import date
 from typing import Optional
 
 class TripBase(BaseModel):
-    destination: str = Field(..., min_length=2, max_length=100, description="Cel podróży")
+    destination: str = Field(..., max_length=100, description="Cel podróży")
     description: Optional[str] = Field(None, max_length=1000, description="Opis podróży")
     start_date: date = Field(..., description="Data rozpoczęcia podróży")
     end_date: date = Field(..., description="Data zakończenia podróży")
-    budget: float = Field(0.0, ge=0.0, description="Budżet podróży (nie może być ujemny)")
+    budget: float = Field(0.0, description="Budżet podróży")
     image_url: Optional[str] = Field(None, description="Link do zdjęcia")
 
 class TripCreate(TripBase):
@@ -20,9 +20,17 @@ class TripCreate(TripBase):
     @field_validator("destination")
     @classmethod
     def check_destination_not_empty(cls, v: str) -> str:
-        if not v.strip():
-            raise ValueError("Cel podróży nie może składać się wyłącznie ze spacji!")
-        return v.strip()
+        val = v.strip()
+        if len(val) < 2:
+            raise ValueError("Cel podróży musi zawierać co najmniej 2 znaki!")
+        return val
+
+    @field_validator("budget")
+    @classmethod
+    def check_budget(cls, v: float) -> float:
+        if v < 0:
+            raise ValueError("Budżet podróży nie może być ujemny!")
+        return v
 
 class TripUpdate(TripCreate):
     pass
@@ -30,4 +38,5 @@ class TripUpdate(TripCreate):
 class TripResponse(TripBase):
     id: int
     model_config = ConfigDict(from_attributes=True)
+
 

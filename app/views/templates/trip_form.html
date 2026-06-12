@@ -36,7 +36,9 @@
             <label for="destination">Dokąd się wybierasz? <span style="color: var(--danger);">*</span></label>
             <input type="text" id="destination" name="destination" class="form-input" 
                    placeholder="Np. Rzym, Włochy" required minlength="2" maxlength="100"
-                   value="{{ form_data.destination or '' }}">
+                   value="{{ form_data.destination or '' }}"
+                   oninvalid="this.setCustomValidity('To pole jest wymagane')"
+                   oninput="this.setCustomValidity('')">
             <small style="color: var(--text-muted); font-size: 0.75rem;">Wprowadź miasto i państwo</small>
         </div>
 
@@ -51,13 +53,17 @@
             <div class="form-group">
                 <label for="start_date">Data rozpoczęcia <span style="color: var(--danger);">*</span></label>
                 <input type="date" id="start_date" name="start_date" class="form-input" required
-                       value="{{ form_data.start_date or '' }}">
+                       value="{{ form_data.start_date or '' }}"
+                       oninvalid="this.setCustomValidity('Wybierz datę rozpoczęcia')"
+                       oninput="this.setCustomValidity('')">
             </div>
 
             <div class="form-group">
                 <label for="end_date">Data zakończenia <span style="color: var(--danger);">*</span></label>
                 <input type="date" id="end_date" name="end_date" class="form-input" required
-                       value="{{ form_data.end_date or '' }}">
+                       value="{{ form_data.end_date or '' }}"
+                       oninvalid="this.setCustomValidity('Wybierz datę zakończenia')"
+                       oninput="this.setCustomValidity('')">
             </div>
         </div>
 
